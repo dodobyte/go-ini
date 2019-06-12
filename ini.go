@@ -68,6 +68,23 @@ func (f File) LoadFile(file string) (err error) {
 	return f.Load(in)
 }
 
+// Save INI data to file.
+func (f File) SaveFile(file string) error {
+	out, err := os.Create(file)
+	if err != nil {
+		return err
+	}
+	defer out.Close()
+	for section, keys := range f {
+		fmt.Fprintln(out, "["+section+"]")
+		for key, val := range keys {
+			fmt.Fprintln(out, key, "=", val)
+		}
+		fmt.Fprintln(out)
+	}
+	return nil
+}
+
 func parseFile(in *bufio.Reader, file File) (err error) {
 	section := ""
 	lineNum := 0
