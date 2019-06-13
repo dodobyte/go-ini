@@ -7,6 +7,7 @@ import (
 	"io"
 	"os"
 	"regexp"
+	"sort"
 	"strings"
 )
 
@@ -75,9 +76,14 @@ func (f File) SaveFile(file string) error {
 		return err
 	}
 	defer out.Close()
-	for section, keys := range f {
+	sections := []string{}
+	for section := range f {
+		sections = append(sections, section)
+	}
+	sort.Strings(sections)
+	for _, section := range sections {
 		fmt.Fprintln(out, "["+section+"]")
-		for key, val := range keys {
+		for key, val := range f[section] {
 			fmt.Fprintln(out, key, "=", val)
 		}
 		fmt.Fprintln(out)
